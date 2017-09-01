@@ -15,7 +15,7 @@ SUPPORTED_FEATURES = SUPPORT_TURN_ON | SUPPORT_TURN_OFF | \
     SUPPORT_VOLUME_SET | SUPPORT_VOLUME_MUTE | \
     SUPPORT_SELECT_SOURCE
 
-REQUIREMENTS = ['pymusiccast>=0.0.1']
+REQUIREMENTS = ['pymusiccast==0.0.2']
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
