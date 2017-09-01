@@ -31,10 +31,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     mcDevice = pymusiccast.mcDevice(host, udp_port=port)
     _LOGGER.debug("mcDevice: {} / UDP Port: {}".format(mcDevice, port))
 
-    add_devices([YamahaDevice(mcDevice, name)])
-
-    # TODO: fix this workaround
-    mcDevice.updateStatus()
+    add_devices([YamahaDevice(mcDevice, name)], True)
 
 
 class YamahaDevice(MediaPlayerDevice):
@@ -94,12 +91,18 @@ class YamahaDevice(MediaPlayerDevice):
 
     def update(self):
         _LOGGER.debug("update: {}".format(self.entity_id))
-        if self.entity_id and self._mcDevice.updateStatus_timer is not None:
-            if not self._mcDevice.updateStatus_timer.is_alive():
-                _LOGGER.debug("Resetting timer")
-                self._mcDevice.updateStatus(push=False)
-            else:
-                _LOGGER.debug("Nothing to do.")
+
+        if not self.entity_id:                      # call from constructor setup_platform()
+            _LOGGER.debug("First run")
+            self._mcDevice.updateStatus(push=False)
+        else:                                       # call from regular polling
+            # updateStatus_timer was set before
+            if self._mcDevice.updateStatus_timer:
+                _LOGGER.debug("is_alive: {}".format(self._mcDevice.updateStatus_timer.is_alive()))
+                # can happen if e.g. computer was suspended, while hass was running
+                if not self._mcDevice.updateStatus_timer.is_alive():
+                    _LOGGER.debug("Reinitializing")
+                    self._mcDevice.updateStatus()
 
     def turn_on(self):
         _LOGGER.debug("Turn device: on")
