@@ -31,7 +31,7 @@ SUPPORTED_FEATURES = (
     SUPPORT_SELECT_SOURCE
 )
 
-REQUIREMENTS = ['pymusiccast==0.0.4']
+REQUIREMENTS = ['pymusiccast==0.0.5']
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
