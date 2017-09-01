@@ -5,15 +5,20 @@ from homeassistant.const import (
 )
 from homeassistant.components.media_player import (
     MediaPlayerDevice,
-    SUPPORT_TURN_ON, SUPPORT_TURN_OFF,
+    SUPPORT_PAUSE, SUPPORT_PREVIOUS_TRACK, SUPPORT_NEXT_TRACK,
+    SUPPORT_TURN_ON, SUPPORT_TURN_OFF, SUPPORT_PLAY_MEDIA,
     SUPPORT_VOLUME_SET, SUPPORT_VOLUME_MUTE,
-    SUPPORT_SELECT_SOURCE
+    SUPPORT_SELECT_SOURCE, SUPPORT_STOP
 )
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORTED_FEATURES = SUPPORT_TURN_ON | SUPPORT_TURN_OFF | \
-    SUPPORT_VOLUME_SET | SUPPORT_VOLUME_MUTE | \
+SUPPORTED_FEATURES = (
+    SUPPORT_PLAY_MEDIA | SUPPORT_PAUSE | SUPPORT_STOP |
+    SUPPORT_PREVIOUS_TRACK | SUPPORT_NEXT_TRACK |
+    SUPPORT_TURN_ON | SUPPORT_TURN_OFF |
+    SUPPORT_VOLUME_SET | SUPPORT_VOLUME_MUTE |
     SUPPORT_SELECT_SOURCE
+)
 
 REQUIREMENTS = ['pymusiccast==0.0.2']
 
@@ -111,6 +116,26 @@ class YamahaDevice(MediaPlayerDevice):
     def turn_off(self):
         _LOGGER.debug("Turn device: off")
         self._mcDevice.setPower(False)
+
+    def media_play(self):
+        _LOGGER.debug("Play")
+        self._mcDevice.setPlayback("play")
+
+    def media_pause(self):
+        _LOGGER.debug("Pause")
+        self._mcDevice.setPlayback("pause")
+
+    def media_stop(self):
+        _LOGGER.debug("Stop")
+        self._mcDevice.setPlayback("stop")
+
+    def media_previous_track(self):
+        _LOGGER.debug("Previous")
+        self._mcDevice.setPlayback("previous")
+
+    def media_next_track(self):
+        _LOGGER.debug("Next")
+        self._mcDevice.setPlayback("next")
 
     def mute_volume(self, mute):
         """Send mute command."""
