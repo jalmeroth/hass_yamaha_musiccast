@@ -10,12 +10,15 @@ media_player:
 """
 
 import logging
+import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
+
 from homeassistant.const import (
     CONF_NAME, CONF_HOST, CONF_PORT,
     STATE_UNKNOWN, STATE_ON
 )
 from homeassistant.components.media_player import (
-    MediaPlayerDevice, MEDIA_TYPE_MUSIC,
+    MediaPlayerDevice, MEDIA_TYPE_MUSIC, PLATFORM_SCHEMA,
     SUPPORT_PAUSE, SUPPORT_PREVIOUS_TRACK, SUPPORT_NEXT_TRACK,
     SUPPORT_TURN_ON, SUPPORT_TURN_OFF, SUPPORT_PLAY,
     SUPPORT_VOLUME_SET, SUPPORT_VOLUME_MUTE,
@@ -33,6 +36,15 @@ SUPPORTED_FEATURES = (
 
 REQUIREMENTS = ['pymusiccast==0.0.5']
 
+DEFAULT_NAME = "Yamaha Receiver"
+DEFAULT_PORT = 5005
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Required(CONF_HOST): cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.positive_int,
+})
+
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
 
@@ -42,7 +54,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     name = config.get(CONF_NAME)
     host = config.get(CONF_HOST)
-    port = config.get(CONF_PORT, 5005)
+    port = config.get(CONF_PORT)
 
     mcDevice = pymusiccast.mcDevice(host, udp_port=port)
     _LOGGER.debug("mcDevice: {} / UDP Port: {}".format(mcDevice, port))
