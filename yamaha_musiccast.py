@@ -4,7 +4,7 @@ from homeassistant.const import (
     STATE_UNKNOWN, STATE_ON
 )
 from homeassistant.components.media_player import (
-    MediaPlayerDevice,
+    MediaPlayerDevice, MEDIA_TYPE_MUSIC,
     SUPPORT_PAUSE, SUPPORT_PREVIOUS_TRACK, SUPPORT_NEXT_TRACK,
     SUPPORT_TURN_ON, SUPPORT_TURN_OFF, SUPPORT_PLAY,
     SUPPORT_VOLUME_SET, SUPPORT_VOLUME_MUTE,
@@ -51,6 +51,7 @@ class YamahaDevice(MediaPlayerDevice):
         self._source = None
         self._source_list = []
         self._status = STATE_UNKNOWN
+        self._media_status = None
         self._mcDevice.setYamahaDevice(self)
 
     @property
@@ -93,6 +94,37 @@ class YamahaDevice(MediaPlayerDevice):
     def source_list(self):
         """List of available input sources."""
         return self._source_list
+
+    @property
+    def media_content_type(self):
+        if self._media_status is None:
+            return None
+        else:
+            return MEDIA_TYPE_MUSIC
+
+    @property
+    def media_duration(self):
+        return self._media_status.media_duration if self._media_status else None
+
+    @property
+    def media_image_url(self):
+        return self._media_status.media_image_url if self._media_status else None
+
+    @property
+    def media_artist(self):
+        return self._media_status.media_artist if self._media_status else None
+
+    @property
+    def media_album(self):
+        return self._media_status.media_album if self._media_status else None
+
+    @property
+    def media_track(self):
+        return self._media_status.media_track if self._media_status else None
+
+    @property
+    def media_title(self):
+        return self._media_status.media_title if self._media_status else None
 
     def update(self):
         _LOGGER.debug("update: {}".format(self.entity_id))
