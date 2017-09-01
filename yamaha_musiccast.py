@@ -1,3 +1,14 @@
+"""
+Example for configuration.yaml
+
+media_player:
+  - platform: yamaha_musiccast
+    name: "Living Room"
+    host: 192.168.xxx.xx
+    port: 5005
+
+"""
+
 import logging
 from homeassistant.const import (
     CONF_NAME, CONF_HOST, CONF_PORT,
@@ -20,7 +31,7 @@ SUPPORTED_FEATURES = (
     SUPPORT_SELECT_SOURCE
 )
 
-REQUIREMENTS = ['pymusiccast==0.0.4']
+REQUIREMENTS = ['pymusiccast==0.0.5']
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
